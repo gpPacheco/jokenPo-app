@@ -12,6 +12,7 @@ class _JogoState extends State<Jogo> {
   var _resultadoFinal = "Boa sorte!!!";
   int _vitoriasUsuario = 0;
   int _vitoriasComputador = 0;
+  Color _corResultado = Colors.grey;
 
   void _opcaoSelecionada(String escolhaUsuario) {
     var opcoes = ["pedra", "papel", "tesoura"];
@@ -46,6 +47,7 @@ class _JogoState extends State<Jogo> {
       setState(() {
         _resultadoFinal = "Parabéns!!! Você ganhou :)";
         _vitoriasUsuario++;
+        _corResultado = Colors.yellow;
       });
     } else if ((escolhaApp == "pedra" && escolhaUsuario == "tesoura") ||
         (escolhaApp == "tesoura" && escolhaUsuario == "papel") ||
@@ -53,12 +55,25 @@ class _JogoState extends State<Jogo> {
       setState(() {
         _resultadoFinal = "Puxa!!! Você perdeu :(";
         _vitoriasComputador++;
+        _corResultado = Colors.red;
       });
     } else {
       setState(() {
         _resultadoFinal = "Empate!!! Tente novamente :/";
+        _corResultado = Colors.blue;
       });
     }
+  }
+
+  // Método para reiniciar o placar
+  void _reiniciarPlacar() {
+    setState(() {
+      _vitoriasUsuario = 0;
+      _vitoriasComputador = 0;
+      _resultadoFinal = "Boa sorte!!!";
+      _imagemApp = AssetImage("images/padrao.png");
+      _corResultado = Colors.grey;
+    });
   }
 
   @override
@@ -68,6 +83,14 @@ class _JogoState extends State<Jogo> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         title: const Text('JokenPO'),
+        actions: [
+          // Botão de reinício no AppBar
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: _reiniciarPlacar,
+            tooltip: 'Reiniciar Placar',
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -112,26 +135,48 @@ class _JogoState extends State<Jogo> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               GestureDetector(
-                onTap: () => _opcaoSelecionada("pedra"),
-                child: const Image(
-                  image: AssetImage('images/pedra.png'),
-                  height: 100,
-                ),
-              ),
+                  onTap: () => _opcaoSelecionada("pedra"),
+                  child: Column(children: [
+                    Image(
+                      image: AssetImage('images/pedra.png'),
+                      height: 100,
+                    ),
+                    Text(
+                      "Pedra",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    )
+                  ])),
               GestureDetector(
-                onTap: () => _opcaoSelecionada("papel"),
-                child: const Image(
-                  image: AssetImage('images/papel.png'),
-                  height: 100,
-                ),
-              ),
+                  onTap: () => _opcaoSelecionada("papel"),
+                  child: Column(
+                    children: [
+                      Image(
+                        image: AssetImage('images/papel.png'),
+                        height: 100,
+                      ),
+                      Text(
+                        "Papel",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  )),
               GestureDetector(
-                onTap: () => _opcaoSelecionada("tesoura"),
-                child: const Image(
-                  image: AssetImage('images/tesoura.png'),
-                  height: 100,
-                ),
-              ),
+                  onTap: () => _opcaoSelecionada("tesoura"),
+                  child: Column(
+                    children: [
+                      Image(
+                        image: AssetImage('images/tesoura.png'),
+                        height: 100,
+                      ),
+                      Text(
+                        "Tesoura",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  )),
             ],
           ),
 
@@ -140,7 +185,19 @@ class _JogoState extends State<Jogo> {
             child: Text(
               _resultadoFinal,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: _corResultado),
+            ),
+          ),
+
+          ElevatedButton(
+            onPressed: _reiniciarPlacar,
+            child: Text('Reiniciar Placar'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
             ),
           ),
         ],
